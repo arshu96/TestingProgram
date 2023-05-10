@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Namespace="TestingModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005">
+        <EntityContainer Name="TestingModelTargetContainer" >
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="TestingModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="TestingModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TestSet" EntityType="TestingModel.Test" />
+          <EntitySet Name="QuestionSet" EntityType="TestingModel.Question" />
+          <EntitySet Name="AnswerSet" EntityType="TestingModel.Answer" />
+          <EntitySet Name="UserSet" EntityType="TestingModel.User" />
+          <EntitySet Name="ResultSet" EntityType="TestingModel.Result" />
+          <EntitySet Name="TestQuestionSet" EntityType="TestingModel.TestQuestion" />
+          <AssociationSet Name="TestTestQuestion" Association="TestingModel.TestTestQuestion">
+            <End Role="Test" EntitySet="TestSet" />
+            <End Role="TestQuestion" EntitySet="TestQuestionSet" />
+          </AssociationSet>
+          <AssociationSet Name="QuestionTestQuestion" Association="TestingModel.QuestionTestQuestion">
+            <End Role="Question" EntitySet="QuestionSet" />
+            <End Role="TestQuestion" EntitySet="TestQuestionSet" />
+          </AssociationSet>
+          <AssociationSet Name="QuestionAnswer" Association="TestingModel.QuestionAnswer">
+            <End Role="Question" EntitySet="QuestionSet" />
+            <End Role="Answer" EntitySet="AnswerSet" />
+          </AssociationSet>
+          <AssociationSet Name="QuestionCorrectAnswer" Association="TestingModel.QuestionCorrectAnswer">
+            <End Role="Question" EntitySet="QuestionSet" />
+            <End Role="Answer" EntitySet="AnswerSet" />
+          </AssociationSet>
+          <EntitySet Name="ResultQuestionAnswerSet" EntityType="TestingModel.ResultQuestionAnswer" />
+          <AssociationSet Name="QuestionResultQuestionAnswer" Association="TestingModel.QuestionResultQuestionAnswer">
+            <End Role="Question" EntitySet="QuestionSet" />
+            <End Role="ResultQuestionAnswer" EntitySet="ResultQuestionAnswerSet" />
+          </AssociationSet>
+          <AssociationSet Name="AnswerResultQuestionAnswer" Association="TestingModel.AnswerResultQuestionAnswer">
+            <End Role="Answer" EntitySet="AnswerSet" />
+            <End Role="ResultQuestionAnswer" EntitySet="ResultQuestionAnswerSet" />
+          </AssociationSet>
+          <AssociationSet Name="ResultResultQuestionAnswer" Association="TestingModel.ResultResultQuestionAnswer">
+            <End Role="Result" EntitySet="ResultSet" />
+            <End Role="ResultQuestionAnswer" EntitySet="ResultQuestionAnswerSet" />
+          </AssociationSet>
+          <AssociationSet Name="TestResult" Association="TestingModel.TestResult">
+            <End Role="Test" EntitySet="TestSet" />
+            <End Role="Result" EntitySet="ResultSet" />
+          </AssociationSet>
+          <AssociationSet Name="UserResult" Association="TestingModel.UserResult">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="Result" EntitySet="ResultSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Test">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="100" />
+          <Property Name="TimeToComplete" Type="DateTimeOffset" Nullable="false" />
+          <NavigationProperty Name="TestQuestions" Relationship="TestingModel.TestTestQuestion" FromRole="Test" ToRole="TestQuestion" />
+          <Property Name="Tries" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Results" Relationship="TestingModel.TestResult" FromRole="Test" ToRole="Result" />
+        </EntityType>
+        <EntityType Name="Question">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="500" />
+          <Property Name="ImagePath" Type="String" Nullable="true" MaxLength="100" />
+          <NavigationProperty Name="TestQuestions" Relationship="TestingModel.QuestionTestQuestion" FromRole="Question" ToRole="TestQuestion" />
+          <NavigationProperty Name="Answers" Relationship="TestingModel.QuestionAnswer" FromRole="Question" ToRole="Answer" />
+          <NavigationProperty Name="CorrectAnswers" Relationship="TestingModel.QuestionCorrectAnswer" FromRole="Question" ToRole="Answer" />
+          <Property Name="Type" Type="TestingModel.ChoiceType" Nullable="false" />
+          <NavigationProperty Name="ResultQuestionAnswers" Relationship="TestingModel.QuestionResultQuestionAnswer" FromRole="Question" ToRole="ResultQuestionAnswer" />
+        </EntityType>
+        <EntityType Name="Answer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="100" />
+          <NavigationProperty Name="Question" Relationship="TestingModel.QuestionAnswer" FromRole="Answer" ToRole="Question" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="QuestionC" Relationship="TestingModel.QuestionCorrectAnswer" FromRole="Answer" ToRole="Question" />
+          <Property Name="QuestionCId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="ResultQuestionAnswers" Relationship="TestingModel.AnswerResultQuestionAnswer" FromRole="Answer" ToRole="ResultQuestionAnswer" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" />
+          <Property Name="Login" Type="String" Nullable="false" MaxLength="100" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="100" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" />
+          <Property Name="Role" Type="TestingModel.UserRole" Nullable="false" />
+          <NavigationProperty Name="Results" Relationship="TestingModel.UserResult" FromRole="User" ToRole="Result" />
+        </EntityType>
+        <EntityType Name="Result">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="ResultQuestionAnswers" Relationship="TestingModel.ResultResultQuestionAnswer" FromRole="Result" ToRole="ResultQuestionAnswer" />
+          <Property Name="CompletionDate" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Test" Relationship="TestingModel.TestResult" FromRole="Result" ToRole="Test" />
+          <Property Name="TestId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="TestingModel.UserResult" FromRole="Result" ToRole="User" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TestQuestion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Points" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Test" Relationship="TestingModel.TestTestQuestion" FromRole="TestQuestion" ToRole="Test" />
+          <Property Name="TestId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Question" Relationship="TestingModel.QuestionTestQuestion" FromRole="TestQuestion" ToRole="Question" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="TestTestQuestion">
+          <End Type="TestingModel.Test" Role="Test" Multiplicity="1" />
+          <End Type="TestingModel.TestQuestion" Role="TestQuestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Test">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestQuestion">
+              <PropertyRef Name="TestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="QuestionTestQuestion">
+          <End Type="TestingModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="TestingModel.TestQuestion" Role="TestQuestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestQuestion">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="QuestionAnswer">
+          <End Type="TestingModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="TestingModel.Answer" Role="Answer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Answer">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="QuestionCorrectAnswer">
+          <End Type="TestingModel.Question" Role="Question" Multiplicity="0..1" />
+          <End Type="TestingModel.Answer" Role="Answer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Answer">
+              <PropertyRef Name="QuestionCId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="ChoiceType">
+          <Member Name="Single" />
+          <Member Name="Many" />
+        </EnumType>
+        <EnumType Name="UserRole">
+          <Member Name="Superuser" />
+          <Member Name="User" />
+        </EnumType>
+        <EntityType Name="ResultQuestionAnswer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Question" Relationship="TestingModel.QuestionResultQuestionAnswer" FromRole="ResultQuestionAnswer" ToRole="Question" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Answer" Relationship="TestingModel.AnswerResultQuestionAnswer" FromRole="ResultQuestionAnswer" ToRole="Answer" />
+          <Property Name="AnswerId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Result" Relationship="TestingModel.ResultResultQuestionAnswer" FromRole="ResultQuestionAnswer" ToRole="Result" />
+          <Property Name="ResultId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="QuestionResultQuestionAnswer">
+          <End Type="TestingModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="TestingModel.ResultQuestionAnswer" Role="ResultQuestionAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ResultQuestionAnswer">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AnswerResultQuestionAnswer">
+          <End Type="TestingModel.Answer" Role="Answer" Multiplicity="1" />
+          <End Type="TestingModel.ResultQuestionAnswer" Role="ResultQuestionAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ResultQuestionAnswer">
+              <PropertyRef Name="AnswerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ResultResultQuestionAnswer">
+          <End Type="TestingModel.Result" Role="Result" Multiplicity="1" />
+          <End Type="TestingModel.ResultQuestionAnswer" Role="ResultQuestionAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Result">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ResultQuestionAnswer">
+              <PropertyRef Name="ResultId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TestResult">
+          <End Type="TestingModel.Test" Role="Test" Multiplicity="1" />
+          <End Type="TestingModel.Result" Role="Result" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Test">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Result">
+              <PropertyRef Name="TestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserResult">
+          <End Type="TestingModel.User" Role="User" Multiplicity="1" />
+          <End Type="TestingModel.Result" Role="Result" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Result">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
+        <Alias Key="Model" Value="TestingModel" />
+        <Alias Key="Target" Value="TestingModel.Store" />
+        <EntityContainerMapping CdmEntityContainer="TestingModelContainer" StorageEntityContainer="TestingModelTargetContainer">
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
