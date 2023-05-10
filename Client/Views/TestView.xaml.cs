@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Models.Data;
+using Client.ViewModels;
 
 namespace Client.Views
 {
@@ -19,9 +21,24 @@ namespace Client.Views
     /// </summary>
     public partial class TestView : Window
     {
+
         public TestView()
         {
             InitializeComponent();
+
+            this.DataContext = new TestViewModel(new Question[]
+            {
+                new Question()
+                {
+                    Id = 1,
+                    QuestionText = "qadghjh",
+                },
+                new Question()
+                {
+                    Id = 2,
+                    QuestionText = "asdfg",
+                },
+            });
         }
     }
 }

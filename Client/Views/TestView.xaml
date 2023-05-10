@@ -4,9 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.Views"
+        xmlns:viewmodels="clr-namespace:Client.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:TestViewModel}"
         mc:Ignorable="d"
         Title="TestView" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Label Content="{Binding CurrentIndex}"></Label>
+            <Label Content="{Binding CurrentQuestion.QuestionText}"></Label>
+            <ListBox></ListBox>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" ItemsSource="{Binding Commands}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Item1}" Command="{Binding Item2}"></Button>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Grid.Row="1">Послати</Button>
+        </Grid>
     </Grid>
 </Window>
